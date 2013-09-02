@@ -9,12 +9,14 @@ class debugger():
 		self.pid = None
 		self.debugger_active = False
 	def load(self, path_to_exe):
+
 		#dwCreation flag determines how to create the process
 		#set creation_flags = CREATE_NEW_CONSOLE if you want
 		#to see the calculator GUI
 		creation_flags = DEBUG_PROCESS
+
 		#instantiate the structs
-		startupinfo = STARTUPINFO()
+		startupinfo 		= STARTUPINFO()
 		process_information = PROCESS_INFORMATION()
 		#The following two options allow the started process
 		#to be shown as a separate window.This also illustrates
