@@ -34,7 +34,7 @@ class STARTUPINFO(Structure):
 		("hStdError", 		HANDLE),
 	]
 class PROCESS_INFORMATION(Structure):
-	field = [
+	_fields_ = [
 		("hProcess",	HANDLE),
 		("hThread", 	HANDLE),
 		("dwProcessId", DWORD),
