@@ -1,18 +1,20 @@
 from ctypes import *
 
 # Let's map the Microsoft types to ctypes for clarity
-WORD	= c_ushort
-DWORD 	= c_ulong
-LPBYTE	= POINTER(c_ubyte)
-LPTSTR	= POINTER(c_char)
-HANDLE	= c_void_p
-PVOID 	= c_void_p
+WORD		= c_ushort
+DWORD 		= c_ulong
+LPBYTE		= POINTER(c_ubyte)
+LPTSTR		= POINTER(c_char)
+HANDLE		= c_void_p
+PVOID 		= c_void_p
+UINT_PTR	= c_ulong
 
 # Constants
 DEBUG_PROCESS 		= 0x00000001
 CREATE_NEW_CONSOLE 	= 0x00000010
 PROCESS_ALL_ACCESS	= 0x001F0FFF
 DBG_CONTINUE		= 0x00010002
+INFINITE			= 0xFFFFFFFF
 
 # Structures for CreateProcessA()function
 class STARTUPINFO(Structure):
@@ -53,7 +55,7 @@ EXCEPTION_RECORD._fields_ = [
 		("ExceptionRecord",		 POINTER(EXCEPTION_RECORD)),
 		("ExceptionAddress",	 PVOID),
 		("NumberParameters",	 DWORD),
-		("ExceptionInformation", DWORD),
+		("ExceptionInformation", UINT_PTR * 15),
 	]
 
 class EXCEPTION_RECORD(Structure):
@@ -63,7 +65,7 @@ class EXCEPTION_RECORD(Structure):
 		("ExceptionRecord",		 POINTER(EXCEPTION_RECORD)),
 		("ExceptionAddress",	 PVOID),
 		("NumberParameters",	 DWORD),
-		("ExceptionInformation", DWORD),
+		("ExceptionInformation", UINT_PTR * 15),
 	]
 
 class EXCEPTION_DEBUG_INFO(Structure):
