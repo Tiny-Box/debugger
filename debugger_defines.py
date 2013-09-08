@@ -8,6 +8,8 @@ LPTSTR		= POINTER(c_char)
 HANDLE		= c_void_p
 PVOID 		= c_void_p
 UINT_PTR	= c_ulong
+BYTE		= c_ubyte
+LONG		= c_long
 
 # Constants
 DEBUG_PROCESS 		= 0x00000001
@@ -15,6 +17,9 @@ CREATE_NEW_CONSOLE 	= 0x00000010
 PROCESS_ALL_ACCESS	= 0x001F0FFF
 DBG_CONTINUE		= 0x00010002
 INFINITE			= 0xFFFFFFFF
+
+# Thread constants for CreateToolhelp32Snapshot()
+TH32CS_SNAPTHREAD	= 0x00000004
 
 # Structures for CreateProcessA()function
 class STARTUPINFO(Structure):
@@ -95,6 +100,19 @@ class DEBUG_EVENT(Structure):
 		("u",					DEBUG_EVENT_UNION),
 	]
 
+class FLOATING_SAVE_AREA(Structure):
+	_fields_ = [
+		("ControlWord",			DWORD),
+		("StatusWord",			DWORD),
+		("TagWord",				DWORD),
+		("ErrorOffset",			DWORD),
+		("ErrorSelector",		DWORD),
+		("DataOffset",			DWORD),
+		("DataSelector",		DWORD),
+		("RegisterArea",		BYTE * 80),
+		("Cr0NpxState",			DWORD),
+	]
+
 class CONTEXT(Structure):
 	_fields_ = [
 		("ContextFlags",		DWORD),
@@ -123,5 +141,16 @@ class CONTEXT(Structure):
 		("EFlags",				DWORD),
 		("Esp",					DWORD),
 		("SegSs",				DWORD),
-		("ExtendedRegisters"	BYTE),
+		("ExtendedRegisters",	BYTE * 512),
+	]
+
+class tagTHREADENTRY32(Structure):
+	_fields_ = [
+		("dwSize",				DWORD),
+		("cntUsage",			DWORD),
+		("th32ThreadID",		DWORD),
+		("th32OwnerProcessID",	DWORD),
+		("tpBasePri",			LONG),
+		("tpDeltaPri",			LONG),
+		("dwFlags",				DWORD),
 	]
