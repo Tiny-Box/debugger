@@ -125,12 +125,13 @@ class debugger():
 			while success:
 				if thread_entry.th32OwnerProcessID == self.pid:
 					thread_list.append(thread_entry.th32ThreadID)
-					success = kernel32.Thread32Next(snapshot, byref(thread_entry))
+					
+				success = kernel32.Thread32Next(snapshot, byref(thread_entry))
 
-					kernel32.CloseHandle(snapshot)
-					return thread_list
-				else:
-					return False
+			kernel32.CloseHandle(snapshot)
+			return thread_list
+		else:
+			return False
 
 	def get_thread_context(self, thread_id):
 

@@ -20,7 +20,11 @@ INFINITE			= 0xFFFFFFFF
 
 # Thread constants for CreateToolhelp32Snapshot()
 TH32CS_SNAPTHREAD	= 0x00000004
+THREAD_ALL_ACCESS	= 0x001F03FF
 
+# Context flags for GetThreadContext()
+CONTEXT_FULL				= 0x00010007
+CONTEXT_DEBUG_REGISTERS		= 0x00010010
 # Structures for CreateProcessA()function
 class STARTUPINFO(Structure):
 	_field_ = [
