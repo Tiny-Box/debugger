@@ -6,7 +6,7 @@ pid = raw_input("Enter the PID of the process to attach to:")
 
 debugger.attach(int(pid))
 
-list = debugger.enumerate_threads()
+'''list = debugger.enumerate_threads()
 
 # For each thread in the list we want to
 # grad the value of each of the registers
@@ -23,6 +23,8 @@ for thread in list:
 	print "[**] EBX: 0x%08x" %thread_context.Ebx
 	print "[**] ECX: 0x%08x" %thread_context.Ecx 
 	print "[**] EDX: 0x%08x" %thread_context.Edx
-	print "[*] END DUMP"
+	print "[*] END DUMP" '''
+
+debugger.run()
 
 debugger.detach()

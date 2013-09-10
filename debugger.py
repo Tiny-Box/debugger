@@ -8,6 +8,8 @@ class debugger():
 		self.h_process 		 = None
 		self.pid			 = None
 		self.debugger_active = False 
+		self.h_thread		 = None
+		self.context		 = None
 
 	def load(self, path_to_exe):
 
@@ -84,11 +86,22 @@ class debugger():
 
 			# We aren't going to build any event handlers
 			# just yet. Let's just resume the process for now.
-			raw_input("Press a key to continue...")
+			'''raw_input("Press a key to continue...")
 			self.debugger_active = False
 			kernel32.ContinueDebugEvent( \
 					debug_event.dwProcessId, \
 					debug_event.dwThreadId, \
+					continue_status )'''
+
+			# Let's obtain the thread and context information
+			self.h_thread = self.open_thread(debug_event.dwThreadId)
+			self.context  = self.get_thread_context(self.h_thread)
+
+			print "Event Code: %d Thread ID: %d" %(debug_event.dwDebugEventCode, debug_event.dwThreadId)
+
+			kernel32.ContinueDebugEvent(
+					debug_event.dwProcessId,
+					debug_event.dwThreadId,
 					continue_status )
 
 	def detach(self):
@@ -145,3 +158,6 @@ class debugger():
 			return context
 		else:
 			return False
+
+
+
