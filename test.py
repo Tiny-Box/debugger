@@ -1,6 +1,6 @@
-import my_debugger
+import debugger
 
-debugger = my_debugger.debugger()
+debugger = debugger.debugger()
 
 pid = raw_input("Enter the PID of the process to attach to:")
 
