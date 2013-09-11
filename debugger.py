@@ -5,11 +5,13 @@ kernel32 = windll.kernel32
 
 class debugger():
 	def __init__(self):
-		self.h_process 		 = None
-		self.pid			 = None
-		self.debugger_active = False 
-		self.h_thread		 = None
-		self.context		 = None
+		self.h_process 		 	= None
+		self.pid			 	= None
+		self.debugger_active 	= False 
+		self.h_thread		 	= None
+		self.context		 	= None
+		self.exception		 	= None
+		self.exception_address	= None
 
 	def load(self, path_to_exe):
 
@@ -99,10 +101,36 @@ class debugger():
 
 			print "Event Code: %d Thread ID: %d" %(debug_event.dwDebugEventCode, debug_event.dwThreadId)
 
+		# If the event code is an exception, we want to examine it further
+		if debug_event.dwDebugEventCode == EXCEPTION_DEBUG_EVENT:
+
+			# Obtain the exception code
+			exception = debug_event.u.Exception.ExceptionRecord.ExceptionCode
+			self.exception_address = debug_event.u.Exception.ExceptionRecord.ExceptionAddress
+
+			if exception == EXCEPTION_ACCESS_VIOLATION:
+				print "Access Violation Detected."
+
+				# If a breakpoint is detected, we call an internal handler.
+			elif exception == EXCEPTION_BREAKPOINT:
+				continue_status = self.exception_handler_breakpoint()
+
+			elif exception == EXCEPTION_GUARD_PAGE:
+				print "Guard Page Access Detected."
+
+			elif exception == EXCEPTION_SINGLE_STEP:
+				print "Single Stepping."
+
 			kernel32.ContinueDebugEvent(
 					debug_event.dwProcessId,
 					debug_event.dwThreadId,
 					continue_status )
+	
+	def exception_handler_breakpoint():
+
+		print "[*] Inside the breakpoint handler."
+		print "Exception Address: 0x%08x" % self.exception_address
+		return DBG_CONTINUE
 
 	def detach(self):
 
