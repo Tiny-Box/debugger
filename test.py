@@ -25,6 +25,14 @@ for thread in list:
 	print "[**] EDX: 0x%08x" %thread_context.Edx
 	print "[*] END DUMP" '''
 
+printf_address = debugger.func_resolve("msvcrt.dll", "printf")
+
+print "[*] Address of printf: 0x%08x" %print_address
+
+debugger.bp_set(printf_address)
+
 debugger.run()
 
+'''
 debugger.detach()
+'''
