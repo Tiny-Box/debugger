@@ -11,6 +11,8 @@ class debugger():
 		self.h_thread		 	= None
 		self.context		 	= None
 		self.breakpoints		= {}
+		self.first_breakpoint	= True
+		self.hardware_breakpoints= {}
 		self.exception		 	= None
 		self.exception_address	= None
 
@@ -234,6 +236,65 @@ class debugger():
 				self.breakpoints[address] = (address, original_byte)
 			except:
 				return False
+
+		return True
+
+	def bp_set_hw(self, address, length, condition):
+
+		# Check for a valid length value
+		if length not in (1, 2, 4):
+			return False
+		else:
+			length -= 1
+
+		# Check for a valid condition
+		if condition not in (HW_ACCESS, HW_EXECUTE, HW_WRITE):
+			return False
+
+		# Check for available slots
+		if not self.hardware_breakpoint.has_key(0):
+			available = 0
+		elif not self.hardware_breakpoints.has_key(1):
+			available = 1
+		elif not self.hardware_breakpoints.has_key(2):
+			available = 2
+		elif not self.hardware_breakpoints.has_key(3):
+			available = 3
+		else:
+			return False
+
+		# We want to set the debug register in every thread 
+		for thread_id in self.enumerate_threads():
+			context = self.get_thread_context(thread_id = thread_id)
+
+			# Enable the appropriate flag in the DR7
+			# register to set the breakpoint
+			context.Dr7 |= 1 << (available * 2)
+
+		# Save the address of the breakpoint in the
+		# free register that we found
+		if available == 0:
+			context.Dr0 = address
+		elif available == 1:
+			context.Dr1 == address
+		elif available == 2:
+			context.Dr2 == address
+		elif available == 3:
+			context.Dr3 == address
+
+		# Set the breakpoint condition
+		context.Dr7 |= condition << ((available * 4) + 16)
+
+		# Set the length
+		context.Dr7 |= condition << ((available * 4) + 18)
+
+		# Set thread context with the break set
+		h_thread = self.open_thread(thread_id)
+		kernel32.SetThreadContext(h_thread, byref(context))
+
+		# update the internal hardware breakpoint array at the used
+		# slot index.
+		self.hardware_breakpoints[available] = (address, length, condition)
 
 		return True
 
