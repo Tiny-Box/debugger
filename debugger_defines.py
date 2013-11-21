@@ -189,3 +189,29 @@ class tagTHREADENTRY32(Structure):
 		("tpDeltaPri",			LONG),
 		("dwFlags",				DWORD),
 	]
+
+class PRE_STRUCT(Structure):
+	_fields_ = [
+		("wProcessorArchitecture",	WORD),
+		("wReserved",				WORD),
+	]
+
+class SYSTEM_INFO_UNION(Union):
+	_fields_ = [
+		("dwOemId",			DWORD),
+		("sProcStruc",		PRE_STRUCT),
+	]
+
+class SYSTEM_INFO(Structure):
+	_field_ = [
+		("uSysInfo",					SYSTEM_INFO_UNION),
+		("dwPageSize",					DWORD),
+		("lpMinimumApplicationAddress",	LPVOID),
+		("lpMaximumApplicationAddress",	LPVOID),
+		("dwActiveProcessorMask",		DWORD),
+		("dwNumberOfProcessors",		DWORD),
+		("dwProcessorType",				DWORD),
+		("dwAllocationGranularity",		DWORD),
+		("wProcessorLevel",				WORD),
+		("wProcessorRevision",			WORD),
+	]
