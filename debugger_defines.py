@@ -215,3 +215,14 @@ class SYSTEM_INFO(Structure):
 		("wProcessorLevel",				WORD),
 		("wProcessorRevision",			WORD),
 	]
+
+class MEMORY_BASIC_INFORMATION(Structure):
+	_fields_ = [
+			("BaseAddress", 			PVOID),
+			("AllocationBase",			PVOID),
+			("AllocationProtect",		DWORD),
+			("RegionSize",				SIZE_T),
+			("State",					DWORD),
+			("Protect",					DWORD),
+			("Type",					DWORD),
+	]
